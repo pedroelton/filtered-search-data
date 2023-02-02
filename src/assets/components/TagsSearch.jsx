@@ -1,13 +1,16 @@
-import React, {useState} from "react";
+import React, { useState } from "react";
 import TagSent from "./TagSent";
 import "./TagsSearch.css";
+import "bootstrap/dist/css/bootstrap.min.css";
 
-function TagsSearch({data, placeholder}) {
+function TagsSearch({ data, placeholder }) {
 	const [tags, setTags] = useState([]);
 	const [isHidden, setIsHidden] = useState(false);
 	const [filteredData, setFilteredData] = useState([]);
 	const [selectedIndex, setSelectedIndex] = useState(0);
 
+	//Se tiver como usar a tag aqui no lugar de indexToRemove seria melhor
+	//Pq se tiver outro component com o msm numero eles podem ser filtrados ao mesmo tempo
 	const removeTags = (indexToRemove) => {
 		setTags(tags.filter((_, index) => index !== indexToRemove));
 	};
@@ -27,45 +30,47 @@ function TagsSearch({data, placeholder}) {
 
 	const handleFilter = (event) => {
 		const searchWord = event.target.value;
-		const newFilter = data.filter((value) => {
+		const noRepeatTags = data.filter((e) => !tags.includes(e.name));
+		const newFilter = noRepeatTags.filter((value) => {
 			return value.name.toLowerCase().includes(searchWord.toLowerCase());
 		});
 		if (searchWord === "") {
 			setFilteredData([]);
 		} else {
+			setIsHidden(false);
 			setFilteredData(newFilter);
 		}
 	};
 
 	return (
-		<div className="Apps w-screen h-screen flex justify-center items-start flex-col p-5 bg-purple-50">
-			<div className="flex w-full   mb-4">
-				<div className="border border-gray-10 p-1 rounded-lg w-full max-w-[500px] flex relative bg-white">
+		<div className="container-fluid d-flex flex-column px-0">
+			<div className="d-flex flex-column container-fluid mb-4 px-0">
+				<div className="align-items-start justify-content-start w-100 px-0 position-relative">
 					<input
 						type="text"
 						placeholder={placeholder}
-						className="flex-1 outline-0 px-1"
+						className="border border-light-subtle rounded form-control px-2"
 						onKeyUp={(e) => (e.key === "Enter" ? addTags(e) : null)}
 						onChange={handleFilter}
 					/>
-
 					{filteredData.length !== 0 ? (
 						<ul
 							className={`my-element ${
 								isHidden
-									? "hidden"
-									: "flex flex-col max-h-[290px] w-auto overflow-y-auto scrollbar shadow-2xl rounded-md absolute top-8 left-0 z-20 bg-white"
+									? "d-none"
+									: "dropdown-menu d-flex flex-column align-items-start justify-content-start w-auto scrollbar shadow-lg rounded-3 position-absolute top-8 start-0 z-3 bg-light"
 							}`}>
 							{filteredData.slice(0, 10).map((value, index) => {
 								return (
 									<a
 										href={value.link}
-										key={index}>
+										key={value.name}
+										className="text-decoration-none w-100">
 										<li
 											className={
 												index === selectedIndex
-													? "selected text-left hover:bg-purple-50 border-b text-sm hover:text-blue-500 px-4 py-2 w-full"
-													: " text-left hover:bg-purple-50 border-b text-sm hover:text-blue-500 px-4 py-2 w-full"
+													? "dropdown-item border-bottom fs-6 w-100 p-1"
+													: "dropdown-item border-bottom fs-6 w-100 p-1"
 											}
 											onClick={handleClick}>
 											{value.name}
@@ -79,9 +84,9 @@ function TagsSearch({data, placeholder}) {
 					)}
 				</div>
 			</div>
-			<div className="flex flex-wrap justify-start items-start gap-2">
+			<div className="d-flex flex-wrap align-items-start justify-content-start">
 				{tags.map((tag, index) => (
-					<ul className="flex gap-1">
+					<ul className="d-flex align-items-start justify-content-start m-0 p-1">
 						<TagSent
 							titleName={tag}
 							key={index}

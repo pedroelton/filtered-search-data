@@ -1,11 +1,12 @@
-import {useState} from "react";
+import { useState } from "react";
 import "./App.css";
 import TagsSearch from "./assets/components/TagsSearch";
 import BookData from "./assets/Data.json";
+import "bootstrap/dist/css/bootstrap.min.css";
 
 function App() {
 	return (
-		<div className="App">
+		<div className="container-fluid">
 			<TagsSearch
 				data={BookData}
 				placeholder="Press enter to add resources"
